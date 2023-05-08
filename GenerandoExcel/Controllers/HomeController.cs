@@ -17,7 +17,34 @@ namespace GenerandoExcel.Controllers
         {
             this.context = context;
         }
+        [HttpPost]
+        public async Task<IActionResult> ImportarPersonasDesdeExcel (IFormFile excel)
+        {
 
+            var workbook = new XLWorkbook(excel.OpenReadStream());
+            var hoja = workbook.Worksheet(1);
+
+            var primeraFilaUsada = hoja.FirstRowUsed().RangeAddress.FirstAddress.RowNumber;
+            var ultimaFilaUsada = hoja.LastRowUsed().RangeAddress.FirstAddress.RowNumber;
+
+            var personas = new List<Persona>();
+
+
+            for(int i =primeraFilaUsada+1;i <= ultimaFilaUsada; i++)
+            {
+                var fila = hoja.Row(i);
+                var persona = new Persona();
+
+                persona.Nombre = fila.Cell(1).GetString();
+                persona.Salario = fila.Cell(2).GetValue<decimal>();
+                persona.FechaNacimiento = fila.Cell(3).GetDateTime();
+                personas.Add(persona);
+            }
+            context.AddRange(personas);
+            await context.SaveChangesAsync();
+
+            return View("index");
+        }
 
         [HttpGet]
         public async Task<FileResult> ExportarPersonasExcel()

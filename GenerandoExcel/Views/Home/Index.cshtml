@@ -7,3 +7,14 @@
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
     <a class="btn btn-primary" asp-action="ExportarPersonasExcel">Descargar Excel de personas</a>
 </div>
+
+
+<form method="post" asp-action="ImportarPersonasDesdeExcel" enctype="multipart/form-data">
+    
+        <input  type="file" name="excel" id="excel"/>
+
+  
+
+    <button class="btn btn-primary" type="submit">Enviar</button>
+
+</form>
